@@ -4,9 +4,12 @@ import styles from './styles.module.css'
 import getNews from '../../api/apiNews'
 import type { NewsItem } from '../../types/news'
 import NewsList from '../../NewsList/NewsList'
+import NewsBannerSkeleton from '../../components/NewsBanner/NewsBannerSkeleton'
+import NewsItemSkeleton from '../../NewsItem/NewsItemSkeleton'
 
 const Main = () => {
     const [news, setNews] = useState<NewsItem[]>([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -19,23 +22,28 @@ const Main = () => {
             }catch (error){
                 console.log(error);
                 
+            } finally {
+                setLoading(false)
             }
         }
 
         fetchNews()
 
-    }, [])
-
-    console.log(news);
-    
+    }, [])    
 
     return (
         <main className={styles.main}>
-            {news.length ? <NewsBanner item={news[0]}/> : null}
+            {loading ? <NewsBannerSkeleton /> : news.length ? <NewsBanner item={news[0]}/> : null}
 
-            <NewsList 
-            news={news}
-            />
+            {loading ? (
+                <ul className={styles.skeletonList}>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                        <NewsItemSkeleton key={index} />
+                    ))}
+                </ul>
+            ) : (
+                <NewsList news={news} />
+            )}
         </main>
     )
 }
