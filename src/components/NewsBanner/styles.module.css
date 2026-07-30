@@ -5,6 +5,13 @@
     gap: 12px;
 }
 
+.imagePlaceholder {
+    width: 100%;
+    height: 0;
+    padding-top: 80%;
+    border-radius: 0;
+}
+
 .title {
     font-size: 16px;
 }
@@ -12,4 +19,16 @@
 .extra {
     font-size: 12px;
     color: #6c7072;
+}
+
+.titlePlaceholder {
+    width: 70%;
+    height: 18px;
+    border-radius: 8px;
+}
+
+.extraPlaceholder {
+    width: 40%;
+    height: 12px;
+    border-radius: 8px;
 }

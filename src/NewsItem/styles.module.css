@@ -26,3 +26,15 @@
     background-size: cover;
     flex-shrink: 0;
 }
+
+.titlePlaceholder {
+    width: 80%;
+    height: 16px;
+    border-radius: 8px;
+}
+
+.extraPlaceholder {
+    width: 55%;
+    height: 12px;
+    border-radius: 8px;
+}
