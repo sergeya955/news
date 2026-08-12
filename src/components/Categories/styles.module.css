@@ -1,0 +1,22 @@
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.item {
+  border: none;
+  background-color: #f2f4f5;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.active {
+  border: none;
+  background-color: #E7E7FF;
+  color: #6b4eff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
