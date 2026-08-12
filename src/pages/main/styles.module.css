@@ -11,3 +11,17 @@
     flex-direction: column;
     gap: 16px;
 }
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.categoryButton {
+    border: none;
+    background-color: #f2f4f5;
+    padding: 8px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+}
