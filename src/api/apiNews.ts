@@ -3,11 +3,12 @@ import type { NewsApiResponse, NewsItem } from '../types/news'
 const API_KEY = import.meta.env.VITE_NEWS_API_KEY
 const BASE_URL = import.meta.env.VITE_NEWS_BASE_API_URL
 
-const getNews = async (pageNumber = 1, pageSize = 10, category?: string | null): Promise<NewsItem[]> => {
+const getNews = async (pageNumber = 1, pageSize = 10, category?: string | null, keywords?: string): Promise<NewsItem[]> => {
   try {
     const params = new URLSearchParams({
       page_number: String(pageNumber),
       page_size: String(pageSize),
+      keywords: String(keywords)
     })
 
     if (category) {
