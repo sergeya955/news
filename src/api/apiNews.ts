@@ -1,21 +1,40 @@
-import type { NewsApiResponse, NewsItem } from '../types/news'
+import type { NewsApiResponse, NewsItem, NewsQueryParams } from '../types/news'
 
 const API_KEY = import.meta.env.VITE_NEWS_API_KEY
 const BASE_URL = import.meta.env.VITE_NEWS_BASE_API_URL
 
-const getNews = async (pageNumber = 1, pageSize = 10, category?: string | null, keywords?: string): Promise<NewsItem[]> => {
+const getApiUrl = (endpoint: string): string => {
+  const url = new URL(endpoint, BASE_URL)
+
+  return url.toString()
+}
+
+const getNews = async ({
+  page_number = 1,
+  page_size = 10,
+  category,
+  keywords,
+}: NewsQueryParams = {}): Promise<NewsItem[]> => {
   try {
+    if (!API_KEY || !BASE_URL) {
+      console.error("News API env variables are missing")
+      return []
+    }
+
     const params = new URLSearchParams({
-      page_number: String(pageNumber),
-      page_size: String(pageSize),
-      keywords: String(keywords)
+      page_number: String(page_number),
+      page_size: String(page_size),
     })
 
     if (category) {
       params.set("category", category)
     }
 
-    const response = await fetch(`${BASE_URL}search?${params}`, {
+    if (keywords) {
+      params.set("keywords", keywords)
+    }
+
+    const response = await fetch(`${getApiUrl("search")}?${params}`, {
       headers: {
         Authorization: `Bearer ${API_KEY}`,
       },
@@ -32,7 +51,12 @@ const getNews = async (pageNumber = 1, pageSize = 10, category?: string | null, 
 
 const getCategories = async (): Promise<string[]> => {
   try {
-    const response = await fetch(`${BASE_URL}available/categories`, {
+    if (!API_KEY || !BASE_URL) {
+      console.error("News API env variables are missing")
+      return []
+    }
+
+    const response = await fetch(getApiUrl("available/categories/"), {
       headers: {
         Authorization: `Bearer ${API_KEY}`,
       },
