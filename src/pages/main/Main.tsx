@@ -1,78 +1,72 @@
-import { useEffect, useState } from "react";
 import NewsBanner from "../../components/NewsBanner/NewsBanner";
-import styles from "./styles.module.css";
-import { getCategories, getNews } from "../../api/apiNews";
-import type { NewsItem } from "../../types/news";
-import NewsList from "../../NewsList/NewsList";
 import NewsBannerSkeleton from "../../components/NewsBanner/NewsBannerSkeleton";
-import NewsItemSkeleton from "../../NewsItem/NewsItemSkeleton";
-import Pagintaion from "../../components/Pagination/Pagintaion";
 import Categories from "../../components/Categories/Categories";
+import Pagintaion from "../../components/Pagination/Pagintaion";
 import Search from "../../components/Search/search";
-import { useDebounce} from "../../helpers/hooks/useDebounce"
+import NewsList from "../../NewsList/NewsList";
+import NewsItemSkeleton from "../../NewsItem/NewsItemSkeleton";
+import { getCategories, getNews } from "../../api/apiNews";
+import { TOTAL_PAGES } from "../../constants/pagination";
+import { useDebounce } from "../../helpers/hooks/useDebounce";
+import { useFetch } from "../../helpers/hooks/useFetch";
+import type { NewsItem } from "../../types/news";
+import styles from "./styles.module.css";
+import { useFilters } from "../../helpers/hooks/useFilters";
 
 const Main = () => {
-  const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string>("All");
-  const [news, setNews] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [keywords, setKeywords] = useState<string>("")
-  const totalPages = 10;
-  const pageSize = 10;
+  const PAGE_SIZE = 10;
 
-  const debouncedKeywords = useDebounce(keywords, 500)
+  const { filters, changeFilters } = useFilters({
+    page_number: 1,
+    page_size: PAGE_SIZE,
+    category: "All",
+    keywords: "",
+  });
 
-  const fetchNews = async (currentPage: number) => {
-    setLoading(true);
-    try {
-      const response = await getNews(
-        currentPage,
-        pageSize,
-        selectedCategories === "All" ? null : selectedCategories,
-        keywords
-      );
-
-      setNews(Array.isArray(response) ? response : []);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+  const handleCategorySelect = (category: string) => {
+    changeFilters("category", category);
+    changeFilters("page_number", 1);
   };
 
-  const fetchCategories = async () => {
-    try {
-      const response = await getCategories();
-      setCategories(["All", ...response]);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleKeywordsChange = (keywords: string) => {
+    changeFilters("keywords", keywords);
+    changeFilters("page_number", 1);
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const debouncedKeywords = useDebounce(filters.keywords, 500);
 
-  useEffect(() => {
-    fetchNews(currentPage);
-  }, [currentPage, selectedCategories, debouncedKeywords]);
+  const { data: news = [], isLoading: newsLoading } = useFetch<NewsItem[]>(
+    getNews,
+    {
+      page_number: filters.page_number,
+      page_size: PAGE_SIZE,
+      category: filters.category === "All" ? null : filters.category,
+      keywords: debouncedKeywords,
+    },
+    [],
+  );
 
+  const { data: dataCategories = [] } = useFetch<string[]>(
+    getCategories,
+    undefined,
+    [],
+  );
+  const categories = ["All", ...dataCategories.filter((category) => category !== "All")];
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+    if (filters.page_number < TOTAL_PAGES) {
+      changeFilters("page_number", filters.page_number + 1);
     }
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+    if (filters.page_number > 1) {
+      changeFilters("page_number", filters.page_number - 1);
     }
   };
 
   const handlePageClick = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    changeFilters("page_number", pageNumber);
   };
 
   return (
@@ -80,31 +74,28 @@ const Main = () => {
       {categories.length ? (
         <Categories
           categories={categories}
-          selectedCategory={selectedCategories}
-          setSelectedCategory={setSelectedCategories}
+          selectedCategory={filters.category}
+          setSelectedCategory={handleCategorySelect}
         />
       ) : null}
 
-      <Search 
-      keywords={keywords}
-      setKeywords={setKeywords}
-      />
+      <Search keywords={filters.keywords} setKeywords={handleKeywordsChange} />
 
-      {loading ? (
+      {newsLoading ? (
         <NewsBannerSkeleton />
       ) : news.length ? (
         <NewsBanner item={news[0]} />
       ) : null}
 
       <Pagintaion
-        totalPages={totalPages}
+        totalPages={TOTAL_PAGES}
+        currentPage={filters.page_number}
         handleNextPage={handleNextPage}
         handlePrevPage={handlePrevPage}
         handlePageClick={handlePageClick}
-        currentPage={currentPage}
       />
 
-      {loading ? (
+      {newsLoading ? (
         <ul className={styles.skeletonList}>
           {Array.from({ length: 5 }).map((_, index) => (
             <NewsItemSkeleton key={index} />
@@ -113,6 +104,14 @@ const Main = () => {
       ) : (
         <NewsList news={news} />
       )}
+
+      <Pagintaion
+        totalPages={TOTAL_PAGES}
+        currentPage={filters.page_number}
+        handleNextPage={handleNextPage}
+        handlePrevPage={handlePrevPage}
+        handlePageClick={handlePageClick}
+      />
     </main>
   );
 };

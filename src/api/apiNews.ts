@@ -1,4 +1,4 @@
-import type { NewsApiResponse, NewsItem } from '../types/news'
+import type { NewsApiResponse, NewsItem, NewsQueryParams } from '../types/news'
 
 const API_KEY = import.meta.env.VITE_NEWS_API_KEY
 const BASE_URL = import.meta.env.VITE_NEWS_BASE_API_URL
@@ -9,7 +9,12 @@ const getApiUrl = (endpoint: string): string => {
   return url.toString()
 }
 
-const getNews = async (pageNumber = 1, pageSize = 10, category?: string | null, keywords?: string): Promise<NewsItem[]> => {
+const getNews = async ({
+  page_number = 1,
+  page_size = 10,
+  category,
+  keywords,
+}: NewsQueryParams = {}): Promise<NewsItem[]> => {
   try {
     if (!API_KEY || !BASE_URL) {
       console.error("News API env variables are missing")
@@ -17,8 +22,8 @@ const getNews = async (pageNumber = 1, pageSize = 10, category?: string | null, 
     }
 
     const params = new URLSearchParams({
-      page_number: String(pageNumber),
-      page_size: String(pageSize),
+      page_number: String(page_number),
+      page_size: String(page_size),
     })
 
     if (category) {
