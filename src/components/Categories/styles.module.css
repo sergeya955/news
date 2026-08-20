@@ -1,12 +1,12 @@
 .categories {
   display: flex;
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   align-items: flex-start;
   box-sizing: border-box;
-  overflow-x: auto;
   white-space: nowrap;
   gap: 8px;
-  scrollbar-width: none;
+  flex-wrap: nowrap;
 }
 
 .item {

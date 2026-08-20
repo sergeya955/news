@@ -6,20 +6,23 @@ type CategoriesProps = {
   setSelectedCategory: (category: string) => void;
 };
 
-const Categories = ({ categories, selectedCategory, setSelectedCategory }: CategoriesProps) => {
+const Categories = ({
+  categories,
+  selectedCategory,
+  setSelectedCategory,
+}: CategoriesProps) => {
   return (
     <div className={styles.categories}>
-      {categories.map((category: string) => {
-        return (
-          <button
-            className={category === selectedCategory ? styles.active : styles.item}
-            onClick={() => setSelectedCategory(category)}
-            key={category}
-          >
-            {category}
-          </button>
-        );
-      })}
+      {categories.map((category) => (
+        <button
+          key={category}
+          className={category === selectedCategory ? styles.active : styles.item}
+          onClick={() => setSelectedCategory(category)}
+          type="button"
+        >
+          {category}
+        </button>
+      ))}
     </div>
   );
 };

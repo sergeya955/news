@@ -1,4 +1,4 @@
-import Header from './components/header/Header'
+import Header from './components/Header/Header'
 import "./index.css"
 import Main from './pages/main/Main'
 
