@@ -1,11 +1,11 @@
 import { getNews } from "../../api/apiNews";
-import { useDebounce } from "../../helpers/hooks/useDebounce";
-import { useFetch } from "../../helpers/hooks/useFetch";
-import type { NewsItem } from "../../types/news";
-import styles from "./styles.module.css";
-import { useFilters } from "../../helpers/hooks/useFilters";
 import LatestNews from "../../components/LatestNews/LatestNews";
 import NewsByFilters from "../../components/NewsByFilters/NewsByFilters";
+import { useDebounce } from "../../helpers/hooks/useDebounce";
+import { useFetch } from "../../helpers/hooks/useFetch";
+import { useFilters } from "../../helpers/hooks/useFilters";
+import type { NewsItem } from "../../types/news";
+import styles from "./styles.module.css";
 
 const Main = () => {
   const PAGE_SIZE = 10;
@@ -19,7 +19,7 @@ const Main = () => {
 
   const debouncedKeywords = useDebounce(filters.keywords, 500);
 
-  const { data: data = [], isLoading: isLoading } = useFetch<NewsItem[]>(
+  const { data: news = [], isLoading } = useFetch<NewsItem[]>(
     getNews,
     {
       page_number: filters.page_number,
@@ -32,9 +32,14 @@ const Main = () => {
 
   return (
     <main className={styles.main}>
-      <LatestNews banners={data} />
+      <LatestNews />
 
-      <NewsByFilters news={data} isLoading={isLoading} filters={filters} changeFilters={changeFilters} />
+      <NewsByFilters
+        filters={filters}
+        changeFilters={changeFilters}
+        news={news}
+        isLoading={isLoading}
+      />
     </main>
   );
 };

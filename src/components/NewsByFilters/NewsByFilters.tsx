@@ -1,11 +1,11 @@
-import type { ChangeFilters, Filters } from "../../helpers/hooks/useFilters";
 import { TOTAL_PAGES } from "../../constants/pagination";
+import type { ChangeFilters, Filters } from "../../helpers/hooks/useFilters";
 import type { NewsItem } from "../../types/news";
 import NewsList from "../../NewsList/NewsList";
 import NewsItemSkeleton from "../../NewsItem/NewsItemSkeleton";
-import styles from "./styles.module.css";
 import NewsFilters from "../NewsFilters/NewsFilters";
 import PaginationWrapper from "../PaginationWrapper/PaginationWrapper";
+import styles from "./styles.module.css";
 
 type NewsByFiltersProps = {
   filters: Filters;
@@ -17,8 +17,8 @@ type NewsByFiltersProps = {
 const NewsByFilters = ({
   filters,
   changeFilters,
-  isLoading,
   news,
+  isLoading,
 }: NewsByFiltersProps) => {
   const handleNextPage = () => {
     if (filters.page_number < TOTAL_PAGES) {
