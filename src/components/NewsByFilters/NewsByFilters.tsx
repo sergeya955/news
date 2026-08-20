@@ -1,38 +1,25 @@
-import { useFilters } from "../../helpers/hooks/useFilters";
 import { TOTAL_PAGES } from "../../constants/pagination";
+import type { ChangeFilters, Filters } from "../../helpers/hooks/useFilters";
 import type { NewsItem } from "../../types/news";
 import NewsList from "../../NewsList/NewsList";
 import NewsItemSkeleton from "../../NewsItem/NewsItemSkeleton";
-import styles from "./styles.module.css";
 import NewsFilters from "../NewsFilters/NewsFilters";
-import { useFetch } from "../../helpers/hooks/useFetch";
-import { getNews } from "../../api/apiNews";
-import { useDebounce } from "../../helpers/hooks/useDebounce";
 import PaginationWrapper from "../PaginationWrapper/PaginationWrapper";
+import styles from "./styles.module.css";
 
-const NewsByFilters = () => {
-  const PAGE_SIZE = 10;
+type NewsByFiltersProps = {
+  filters: Filters;
+  changeFilters: ChangeFilters<Filters>;
+  news: NewsItem[];
+  isLoading: boolean;
+};
 
-  const { filters, changeFilters } = useFilters({
-    page_number: 1,
-    page_size: PAGE_SIZE,
-    category: "All",
-    keywords: "",
-  });
-
-  const debouncedKeywords = useDebounce(filters.keywords, 500);
-
-  const { data: news = [], isLoading: isLoading } = useFetch<NewsItem[]>(
-    getNews,
-    {
-      page_number: filters.page_number,
-      page_size: PAGE_SIZE,
-      category: filters.category === "All" ? null : filters.category,
-      keywords: debouncedKeywords,
-    },
-    [],
-  );
-
+const NewsByFilters = ({
+  filters,
+  changeFilters,
+  news,
+  isLoading,
+}: NewsByFiltersProps) => {
   const handleNextPage = () => {
     if (filters.page_number < TOTAL_PAGES) {
       changeFilters("page_number", filters.page_number + 1);

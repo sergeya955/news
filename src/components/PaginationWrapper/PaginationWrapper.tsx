@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Pagintaion from "../Pagination/Pagintaion";
+import styles from "./styles.module.css";
 
 type PaginationProps = {
   totalPages: number;
@@ -22,11 +23,11 @@ const PaginationWrapper = ({
   ...paginationProps
 }: PaginationWrapperProps) => {
   return (
-    <>
+    <div className={styles.paginationWrapper}>
       {top ? <Pagintaion {...paginationProps} /> : null}
       {children}
       {bottom ? <Pagintaion {...paginationProps} /> : null}
-    </>
+    </div>
   );
 };
 

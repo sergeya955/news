@@ -1,0 +1,20 @@
+.slider {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+}
+
+.arrow {
+    border: none;
+    background-color: white;
+    cursor: pointer;
+}
+
+.viewport {
+    display: flex;
+    flex: 1;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
